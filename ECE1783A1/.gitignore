@@ -1,0 +1,4 @@
+.dist
+.vscode
+*.yuv
+*.exe
