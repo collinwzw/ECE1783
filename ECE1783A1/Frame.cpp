@@ -35,7 +35,12 @@ class YUVFrame{
 
 		}
 
+		void writeOneFrameToFile(const char* file_name, bool overwrite){
 
-		
+			Y.writePlaneToFile(file_name,overwrite);
+			overwrite = false;
+			U.writePlaneToFile(file_name,overwrite);
+			V.writePlaneToFile(file_name,overwrite);			
+		}
 };
 

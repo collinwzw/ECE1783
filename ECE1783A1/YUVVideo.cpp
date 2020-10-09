@@ -1,6 +1,4 @@
 #include "Frame.cpp"
-#include "YUVVideo.h"
-#include "YUVScaler.cpp"
 #include <cmath>
 #include <string>
 #include <iostream>
@@ -13,14 +11,14 @@ class YUVVideo{
 		std::vector<YUVFrame> frames;
 	public:
 		int frameNumber;
-
-		YUVVideo(char* filename, int resolutionRow, int resolutionColumn, int frametype ){
-			long filesize = yuvOpenInputFile(filename);
+		YUVVideo(){}
+		
+		void LoadYUVFile(char* filename, int resolutionRow, int resolutionColumn, int frametype ){
+			long filesize = GetFileSize(filename);
+			
 			frameNumber = getFrameNumber(resolutionRow,resolutionColumn,frametype,filesize);
-			
-			for(int i = 0; i < frameNumber; i++) frames.push_back(YUVFrame(i, resolutionRow, resolutionColumn, frametype)); 
-			initData(filename,filesize);
-			
+			createEmptyVideo(frameNumber, resolutionRow, resolutionColumn, frametype);
+			loadDataFromFile(filename,filesize);
 		}
 
 		// function need to be update with throw exception
@@ -33,39 +31,22 @@ class YUVVideo{
 			}
 		}
 
-		//file writer, update function to throw exception when failed to read.
-		void writeFrameToFile(const char* file_name, int frameindex){
-			FILE *file = fopen(file_name, "wb");
-			uint8_t byte;
-			if(file!=NULL){
-				for (int row =0; row < frames[frameindex].Y.numberOfRow; row++)
-				{
-					for (int col =0; col < frames[frameindex].Y.numberOfColumn; col++){
-						byte = frames[frameindex].Y.getData(row,col);
-						fwrite(&byte, 1, 1, file);
-					}
-					
-				}
-				cout << "writing done" <<"\n";
-			
-				//read data for U plane
-				for (int row =0; row < frames[frameindex].U.numberOfRow; row++){
-					for (int col =0; col < frames[frameindex].U.numberOfColumn; col ++){
-						byte = frames[frameindex].U.getData(row,col);
-						fwrite(&byte, 1, 1, file);
-					}
-				}
-		
-				//read data for V plane
-				for (int row =0; row < frames[frameindex].V.numberOfRow; row++){
-					for (int col =0; col < frames[frameindex].V.numberOfColumn; col ++){
-						byte = frames[frameindex].V.getData(row,col);
-						fwrite(&byte, 1, 1, file);
-					}
-				}
-				
+		void createEmptyVideo(int framenumber, int resolutionRow, int resolutionColumn, int frametype ){
+			frameNumber = framenumber;
+			if (frameNumber > 0) {
+				for(int i = 0; i < frameNumber; i++) frames.push_back(YUVFrame(i, resolutionRow, resolutionColumn, frametype)); 
+			}
+			else{
+				cout << "the file has wrong size comparing to the input size and type" <<"\n";
 			}
 
+		}
+
+		void writeVideoToFile(const char* file_name, bool overwrite){
+			for (int i = 0; i < frameNumber; i++){
+				if (i==0 && overwrite) frames[i].writeOneFrameToFile(file_name,overwrite);
+				else frames[i].writeOneFrameToFile(file_name,false );
+			}
 		}
 	private:
 		int getFrameNumber(int resolutionRow, int resolutionColumn,int frametype, long filesize){
@@ -102,17 +83,14 @@ class YUVVideo{
 			return std::floor(k) == k;
 		}
 
-		long yuvOpenInputFile(const char* file_name ) {
+		long GetFileSize(const char* file_name ) {
 			long size;
 			ifstream file;
 			file.open(file_name);
 			if (file.is_open()){
 				file.seekg(0, ios::end);
 				size= file.tellg();
-				
 				cout << "successfully opened file " << '\n'; 
-				cout << " tellg() returns " <<size << '\n'; 
-
 				file.close();
 				return size;
 			}
@@ -121,7 +99,8 @@ class YUVVideo{
 			}
 			return -1;
 		}
-	  	void initData(const char* file_name,long filesize){
+	  	
+		void loadDataFromFile(const char* file_name,long filesize){
 			
 			FILE *file = fopen(file_name, "rb");
 
@@ -178,10 +157,14 @@ class YUVVideo{
 // int main()
 // {	
 	
-// 	YUVVideo v1("akiyo_qcif.yuv",176, 144, 420);
+// 	YUVVideo v1, v2;
+// 	v1.LoadYUVFile("akiyo_qcif.yuv",176, 144, 420);
 
 // 	//YUVVideo v1("C:\\Users\\Zhiying\\c++workspace\\ECE1783A1\\akiyo_qcif.yuv",176, 144, 420);
-// 	v1.writeFrameToFile("test.yuv",0);
+// 	//v1.writeOneFrameToFile("test.yuv",100,true);
+// 	v2.createEmptyVideo(300,30,30,420);
+// 	cout << "the number is " << v2.getFrame(0).U.getData(0,0) << '\n';
+// 	v2.writeVideoToFile("test.yuv",0,true);
 // 	return 0;
 // }
 

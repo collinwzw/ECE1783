@@ -21,7 +21,7 @@ class Plane{
 		//get Data according to the input argument row and col
 	    // function need to improved with exception 
 	  	uint8_t getData(int row, int col){
-			if (row < numberOfRow || col < numberOfColumn){
+			if (row < numberOfRow && col < numberOfColumn){
 				return matrix[row][col];
 			}
 			else{
@@ -51,6 +51,25 @@ class Plane{
 			for(int i = 0; i < numberOfRow; i++)
 			matrix[i] = new uint8_t[numberOfColumn]; 
 		}
+
+		//writing specific frame to file, update function to throw exception when failed to read.
+		void writePlaneToFile(const char* file_name, bool overwrite){
+			FILE *file;
+			if (overwrite) 	file = fopen(file_name, "wb");
+			else file = fopen(file_name, "ab");
+			uint8_t byte;
+			if(file!=NULL){
+				for (int row =0; row < numberOfRow; row++){
+					for (int col =0; col < numberOfColumn; col++){
+						byte = getData(row,col);
+						fwrite(&byte, 1, 1, file);
+					}
+					
+				}
+			}
+			fclose(file);
+		}
+		
 };
 
 
