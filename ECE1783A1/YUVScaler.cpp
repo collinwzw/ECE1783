@@ -1,4 +1,5 @@
-#include "YUVVideo.cpp"
+
+#include "YUVVideo.h"
 #include <string>
 #include <iostream>
 using namespace std;
@@ -42,22 +43,4 @@ class YUVScaler{
 
 };
 
-int main()
-{	
-	
-	YUVVideo v1, v2;
-	v1.LoadYUVFile("akiyo_qcif.yuv",176, 144, 420);
-	//v1.LoadYUVFile("debug.yuv",4,4 , 420);
-	//v2.createEmptyVideo(1,4,4,444);
-	//YUVVideo v1("C:\\Users\\Zhiying\\c++workspace\\ECE1783A1\\akiyo_qcif.yuv",176, 144, 420);
-	//v1.writeOneFrameToFile("test.yuv",100,true);
-	
-	v2.createEmptyVideo(300,176,144,444);
-	YUVScaler vs;
-	vs.yuvScaler420to444(v1,v2);
-	//cout << "the number is " << v2.getFrame(0).U.getData(0,1) << '\n';
-	//v2.writeVideoToFile("test.yuv",true);
-	v1.writeVideoToFile("fristframe420.yuv",true);
-	v2.getFrame(0).writeOneFrameToFile("fristframe444.yuv",true);
-	return 0;
-}
+

@@ -1,4 +1,4 @@
-#include "Frame.cpp"
+#include "YUVFrame.h"
 #include <cmath>
 #include <string>
 #include <iostream>
@@ -28,6 +28,7 @@ class YUVVideo{
 			}
 			else{
             	throw std::invalid_argument( "received invalid frametype value" );
+				return frames[0];
 			}
 		}
 
@@ -40,6 +41,13 @@ class YUVVideo{
 				cout << "the file has wrong size comparing to the input size and type" <<"\n";
 			}
 
+		}
+		
+		void writeYOnlyVideoToFile(const char* file_name, bool overwrite){
+			for (int i = 0; i < frameNumber; i++){
+				if (i==0 && overwrite) frames[i].Y.writePlaneToFile(file_name,overwrite);
+				else frames[i].Y.writePlaneToFile(file_name,false);
+			}
 		}
 
 		void writeVideoToFile(const char* file_name, bool overwrite){
@@ -63,6 +71,10 @@ class YUVVideo{
 					break;
 				case(420):
 					bytesPerFrame = resolutionRow * resolutionColumn * 1.5;// 16 + 4 + 4 = 24
+					frame_number = ( filesize / bytesPerFrame );
+					break;
+				case(400):
+					bytesPerFrame = resolutionRow * resolutionColumn ;// 16 + 4 + 4 = 24
 					frame_number = ( filesize / bytesPerFrame );
 					break;
 				default:
@@ -147,24 +159,10 @@ class YUVVideo{
 				
 				//file.close();
 				fclose(file);
+				free(YUV);
 			}
 			else{
 				cout << "unable to open file "  << '\n'; 
 			}
 		}
 };
-
-// int main()
-// {	
-	
-// 	YUVVideo v1, v2;
-// 	v1.LoadYUVFile("akiyo_qcif.yuv",176, 144, 420);
-
-// 	//YUVVideo v1("C:\\Users\\Zhiying\\c++workspace\\ECE1783A1\\akiyo_qcif.yuv",176, 144, 420);
-// 	//v1.writeOneFrameToFile("test.yuv",100,true);
-// 	v2.createEmptyVideo(300,30,30,420);
-// 	cout << "the number is " << v2.getFrame(0).U.getData(0,0) << '\n';
-// 	v2.writeVideoToFile("test.yuv",0,true);
-// 	return 0;
-// }
-
