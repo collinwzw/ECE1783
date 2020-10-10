@@ -22,16 +22,16 @@ class YUVFrame{
 				case(444):
 					break;
 				case(422):
-					U.resetSize(resolutionRow, resolutionColumn/2);
-					V.resetSize(resolutionRow, resolutionColumn/2);
+					U.resetSizeEmptyData(resolutionRow, resolutionColumn/2);
+					V.resetSizeEmptyData(resolutionRow, resolutionColumn/2);
 					break;
 				case(420):
-					U.resetSize(resolutionRow/2, resolutionColumn/2);
-					V.resetSize(resolutionRow/2, resolutionColumn/2);
+					U.resetSizeEmptyData(resolutionRow/2, resolutionColumn/2);
+					V.resetSizeEmptyData(resolutionRow/2, resolutionColumn/2);
 					break;
 				case(400):
-					U.resetSize(0, 0);
-					V.resetSize(0, 0);
+					U.resetSizeEmptyData(0, 0);
+					V.resetSizeEmptyData(0, 0);
 					break;
 				default:
             		throw std::invalid_argument( "received invalid frametype value" );
@@ -47,6 +47,11 @@ class YUVFrame{
 			U.writePlaneToFile(file_name,overwrite);
 			V.writePlaneToFile(file_name,overwrite);			
 		}
+
+		void blockTruncation(int block_width, int block_height,uint8_t paddingValue){
+			this->Y.blockTruncation(block_width,block_height,paddingValue);
+		}
+		
 };
 
 #endif

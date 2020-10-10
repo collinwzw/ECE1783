@@ -56,6 +56,12 @@ class YUVVideo{
 				else frames[i].writeOneFrameToFile(file_name,false );
 			}
 		}
+
+		void VideoblockTruncation(int block_width, int block_height,uint8_t paddingValue){
+			for (int i = 0; i < frameNumber; i++){
+				this->frames[i].blockTruncation(block_width,block_height,paddingValue);
+			}
+		}
 	private:
 		int getFrameNumber(int resolutionRow, int resolutionColumn,int frametype, long filesize){
 			int bytesPerFrame;

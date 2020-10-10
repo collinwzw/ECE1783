@@ -12,14 +12,24 @@ int main()
 {	
 	YUVVideo v1,v2;
 	v1.LoadYUVFile("akiyo_Y.yuv",176,144,400);
+	//v1.LoadYUVFile("test.yuv",3,3,400);
+	uint8_t paddingValue = (uint8_t) 128;
+	v1.VideoblockTruncation(16, 17, paddingValue);
+	cout <<"the row after adding padding is " << v1.getFrame(0).Y.numberOfRow << '\n';
+	cout <<"the col after adding padding is " << v1.getFrame(0).Y.numberOfColumn << '\n';
+
+	v1.getFrame(0).Y.writePlaneToFile("testout.yuv",true);
 	//v1.writeYOnlyVideoToFile("test.yuv", true);
+
+
+
 	//v1.LoadYUVFile("akiyo_qcif.yuv",176, 144, 420);
 	//v2.createEmptyVideo(300,176,144,444);
 
-	// //v1.LoadYUVFile("debug.yuv",4,4 , 420);
-	// //v2.createEmptyVideo(1,4,4,444);
-	// //YUVVideo v1("C:\\Users\\Zhiying\\c++workspace\\ECE1783A1\\akiyo_qcif.yuv",176, 144, 420);
-	// //v1.writeOneFrameToFile("test.yuv",100,true);
+	//v1.LoadYUVFile("debug.yuv",4,4 , 420);
+	//v2.createEmptyVideo(1,4,4,444);
+	//YUVVideo v1("C:\\Users\\Zhiying\\c++workspace\\ECE1783A1\\akiyo_qcif.yuv",176, 144, 420);
+	//v1.writeYOnlyVideoToFile("akiyo_Y_64BlcokwithPadding.yuv",true);
 	
 
 	//RGBVideo r1;
